@@ -15700,221 +15700,283 @@ task.spawn(C_13);
 local function C_15()
 local script = G2L["15"];
 	script.Parent.MouseButton1Click:Connect(function()
-		local gui = Instance.new("ScreenGui")
-		gui.Name = "CoolExecutor"
-		gui.ResetOnSpawn = false
-		gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+		local player = game.Players.LocalPlayer
+		local UIS = game:GetService("UserInputService")
+		local RunService = game:GetService("RunService")
+		local TouchEnabled = UIS.TouchEnabled
 	
-		local frame = Instance.new("Frame")
-		frame.Size = UDim2.new(0, 450, 0, 400)
-		frame.Position = UDim2.new(0.5, -225, 0.5, -200)
-		frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		frame.BorderSizePixel = 4
-		frame.BorderColor3 = Color3.fromRGB(144, 53, 255)
-		frame.Parent = gui
+		local screenGui = Instance.new("ScreenGui")
+		screenGui.Name = "c00lkiddGUI_V1"
+		screenGui.ResetOnSpawn = false
+		screenGui.Parent = player:WaitForChild("PlayerGui")
 	
-		local title = Instance.new("TextLabel")
-		title.Size = UDim2.new(0.5, 0, 0, 40)
-		title.Position = UDim2.new(0, 0, 0, 0)
-		title.BackgroundTransparency = 1
-		title.Text = "CoolExecutor"
-		title.TextColor3 = Color3.fromRGB(255, 255, 255)
-		title.Font = Enum.Font.SourceSansBold
-		title.TextSize = 28
-		title.TextXAlignment = Enum.TextXAlignment.Left
-		title.Parent = frame
+		local mainFrame = Instance.new("Frame")
+		mainFrame.Size = UDim2.new(0, 500, 0, 350)
+		mainFrame.Position = UDim2.new(0.5, -250, 0.5, -175)
+		mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		mainFrame.BorderSizePixel = 0
+		mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+		mainFrame.ClipsDescendants = true
+		mainFrame.Parent = screenGui
 	
-		local decompileButton = Instance.new("TextButton")
-		decompileButton.Size = UDim2.new(0.25, -5, 0, 40)
-		decompileButton.Position = UDim2.new(0.5, 5, 0, 0)
-		decompileButton.Text = "Decompile"
-		decompileButton.Font = Enum.Font.SourceSansBold
-		decompileButton.TextSize = 22
-		decompileButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		decompileButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-		decompileButton.BorderSizePixel = 2
-		decompileButton.BorderColor3 = Color3.fromRGB(144, 53, 255)
-		decompileButton.Parent = frame
+		local uiCorner = Instance.new("UICorner")
+		uiCorner.CornerRadius = UDim.new(0, 10)
+		uiCorner.Parent = mainFrame
 	
-		local adminButton = Instance.new("TextButton")
-		adminButton.Size = UDim2.new(0.25, -5, 0, 40)
-		adminButton.Position = UDim2.new(0.75, 5, 0, 0)
-		adminButton.Text = "Admin"
-		adminButton.Font = Enum.Font.SourceSansBold
-		adminButton.TextSize = 22
-		adminButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		adminButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-		adminButton.BorderSizePixel = 2
-		adminButton.BorderColor3 = Color3.fromRGB(144, 53, 255)
-		adminButton.Parent = frame
+		local titleLabel = Instance.new("TextLabel")
+		titleLabel.Size = UDim2.new(0, 200, 0, 30)
+		titleLabel.Position = UDim2.new(0, 10, 0, 10)
+		titleLabel.BackgroundTransparency = 1
+		titleLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
+		titleLabel.TextScaled = true
+		titleLabel.Font = Enum.Font.GothamBold
+		titleLabel.Text = "c00lkiddGUI V1"
+		titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+		titleLabel.Parent = mainFrame
 	
-		local textbox = Instance.new("TextBox")
-		textbox.Size = UDim2.new(1, -20, 0, 100)
-		textbox.Position = UDim2.new(0, 10, 0, 50)
-		textbox.TextWrapped = true
-		textbox.TextXAlignment = Enum.TextXAlignment.Left
-		textbox.TextYAlignment = Enum.TextYAlignment.Top
-		textbox.ClearTextOnFocus = false
-		textbox.MultiLine = true
-		textbox.Font = Enum.Font.Code
-		textbox.TextSize = 18
-		textbox.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-		textbox.TextColor3 = Color3.fromRGB(255, 255, 255)
-		textbox.BorderSizePixel = 2
-		textbox.BorderColor3 = Color3.fromRGB(144, 53, 255)
-		textbox.Parent = frame
+		local dragging = false
+		local dragInput, dragStart, startPos
 	
-		local outputBox = Instance.new("ScrollingFrame")
-		outputBox.Size = UDim2.new(1, -20, 0, 160)
-		outputBox.Position = UDim2.new(0, 10, 0, 160)
-		outputBox.CanvasSize = UDim2.new(0, 0, 0, 0)
-		outputBox.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-		outputBox.BorderSizePixel = 2
-		outputBox.BorderColor3 = Color3.fromRGB(144, 53, 255)
-		outputBox.ScrollBarThickness = 8
-		outputBox.AutomaticCanvasSize = Enum.AutomaticSize.Y
-		outputBox.AutomaticSize = Enum.AutomaticSize.None
-		outputBox.Parent = frame
-	
-		local UIListLayout = Instance.new("UIListLayout")
-		UIListLayout.Parent = outputBox
-		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-		UIListLayout.Padding = UDim.new(0, 2)
-	
-		local function logOutput(text, color)
-			local label = Instance.new("TextLabel")
-			label.Size = UDim2.new(1, -10, 0, 20)
-			label.BackgroundTransparency = 1
-			label.Font = Enum.Font.Code
-			label.TextSize = 16
-			label.TextColor3 = color or Color3.new(1, 1, 1)
-			label.Text = text
-			label.TextXAlignment = Enum.TextXAlignment.Left
-			label.TextWrapped = false
-			label.Parent = outputBox
-			task.wait()
-			outputBox.CanvasPosition = Vector2.new(0, outputBox.AbsoluteCanvasSize.Y)
+		local function update(input)
+			local delta = input.Position - dragStart
+			mainFrame.Position = UDim2.new(
+				startPos.X.Scale,
+				startPos.X.Offset + delta.X,
+				startPos.Y.Scale,
+				startPos.Y.Offset + delta.Y
+			)
 		end
 	
-		local button = Instance.new("TextButton")
-		button.Size = UDim2.new(0, 120, 0, 40)
-		button.Position = UDim2.new(1, -130, 1, -52)
-		button.Text = "Execute"
-		button.Font = Enum.Font.SourceSansBold
-		button.TextSize = 22
-		button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-		button.TextColor3 = Color3.fromRGB(100, 100, 100)
-		button.BorderSizePixel = 2
-		button.BorderColor3 = Color3.fromRGB(144, 53, 255)
-		button.AutoButtonColor = false
-		button.Active = false
-		button.Parent = frame
-	
-		local injectButton = Instance.new("TextButton")
-		injectButton.Size = UDim2.new(0, 120, 0, 40)
-		injectButton.Position = UDim2.new(0, 10, 1, -52)
-		injectButton.Text = "Inject"
-		injectButton.Font = Enum.Font.SourceSansBold
-		injectButton.TextSize = 22
-		injectButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		injectButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-		injectButton.BorderSizePixel = 2
-		injectButton.BorderColor3 = Color3.fromRGB(144, 53, 255)
-		injectButton.Parent = frame
-	
-		local eraseButton = Instance.new("TextButton")
-		eraseButton.Size = UDim2.new(0, 120, 0, 40)
-		eraseButton.Position = UDim2.new(0.5, -60, 1, -52)
-		eraseButton.Text = "Erase"
-		eraseButton.Font = Enum.Font.SourceSansBold
-		eraseButton.TextSize = 22
-		eraseButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		eraseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-		eraseButton.BorderSizePixel = 2
-		eraseButton.BorderColor3 = Color3.fromRGB(144, 53, 255)
-		eraseButton.Parent = frame
-	
-		local injected = false
-		injectButton.MouseButton1Click:Connect(function()
-			if injected then return end
-			injected = true
-			injectButton.Text = "Injecting..."
-			injectButton.TextColor3 = Color3.fromRGB(255, 255, 0)
-			wait(1)
-			injectButton.Text = "Injected!"
-			injectButton.TextColor3 = Color3.fromRGB(0, 255, 0)
-			button.Active = true
-			button.AutoButtonColor = true
-			button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-			button.TextColor3 = Color3.fromRGB(255, 255, 255)
-		end)
-	
-		button.MouseButton1Click:Connect(function()
-			if not injected then return end
-			local code = textbox.Text
-			local func, err = loadstring(code)
-			if func then
-				local env = getfenv(func)
-				env.print = function(...)
-					local args = {...}
-					local text = table.concat(args, " ")
-					logOutput("[OUTPUT] " .. text, Color3.fromRGB(255, 255, 255))
-				end
-				env.warn = function(...)
-					local args = {...}
-					local text = table.concat(args, " ")
-					logOutput("[WARN] " .. text, Color3.fromRGB(255, 255, 0))
-				end
-				setfenv(func, env)
-				local success, result = pcall(func)
-				if not success then
-					logOutput("[ERROR] " .. tostring(result), Color3.fromRGB(255, 0, 0))
-				end
-			else
-				logOutput("[LOAD ERROR] " .. tostring(err), Color3.fromRGB(255, 0, 0))
+		mainFrame.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or (TouchEnabled and input.UserInputType == Enum.UserInputType.Touch) then
+				dragging = true
+				dragStart = input.Position
+				startPos = mainFrame.Position
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragging = false
+					end
+				end)
 			end
 		end)
 	
-		eraseButton.MouseButton1Click:Connect(function()
-			textbox.Text = ""
+		mainFrame.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or (TouchEnabled and input.UserInputType == Enum.UserInputType.Touch) then
+				dragInput = input
+			end
 		end)
 	
-		decompileButton.MouseButton1Click:Connect(function()
-			if not injected then
-				logOutput("[ERROR] You must inject before decompiling.", Color3.fromRGB(255, 0, 0))
-				return
+		UIS.InputChanged:Connect(function(input)
+			if input == dragInput and dragging then
+				update(input)
 			end
-			logOutput("[INFO] Loading Dex Decompiler...", Color3.fromRGB(0, 255, 255))
-			local success, result = pcall(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/peyton2465/Dex/master/out.lua"))()
+		end)
+	
+		local tabNames = {"Hub","Executor","Credits","Logs"}
+		local tabs = {}
+		local buttonWidth = 120
+	
+		for i, name in ipairs(tabNames) do
+			local btn = Instance.new("TextButton")
+			btn.Size = UDim2.new(0, buttonWidth, 0, 30)
+			btn.Position = UDim2.new(0, 10 + (i-1)*(buttonWidth + 5), 0, 50)
+			btn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+			btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+			btn.Font = Enum.Font.GothamBold
+			btn.Text = name
+			btn.Parent = mainFrame
+	
+			tabs[name] = Instance.new("Frame")
+			tabs[name].Size = UDim2.new(1, -20, 1, -90)
+			tabs[name].Position = UDim2.new(0, 10, 0, 90)
+			tabs[name].BackgroundColor3 = Color3.fromRGB(15,15,15)
+			tabs[name].Visible = false
+			tabs[name].Parent = mainFrame
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0,10)
+			corner.Parent = tabs[name]
+	
+			btn.MouseButton1Click:Connect(function()
+				for _, f in pairs(tabs) do f.Visible = false end
+				tabs[name].Visible = true
 			end)
-			if success then
-				logOutput("[SUCCESS] Dex loaded successfully.", Color3.fromRGB(0, 255, 0))
-			else
-				logOutput("[ERROR] Failed to load Dex: " .. tostring(result), Color3.fromRGB(255, 0, 0))
-			end
-		end)
+		end
 	
-		adminButton.MouseButton1Click:Connect(function()
-			if not injected then
-				logOutput("[ERROR] You must inject before running admin.", Color3.fromRGB(255, 0, 0))
-				return
-			end
-			logOutput("[INFO] Loading Infinite Yield...", Color3.fromRGB(0, 255, 255))
-			local success, result = pcall(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+		local hub = tabs["Hub"]
+	
+		local hubScroll = Instance.new("ScrollingFrame")
+		hubScroll.Size = UDim2.new(1, -10, 1, -10)
+		hubScroll.Position = UDim2.new(0, 5, 0, 5)
+		hubScroll.BackgroundTransparency = 1
+		hubScroll.ScrollBarThickness = 8
+		hubScroll.CanvasSize = UDim2.new(0,0,0,0)
+		hubScroll.Parent = hub
+	
+		local hubLayout = Instance.new("UIListLayout")
+		hubLayout.Padding = UDim.new(0, 10)
+		hubLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		hubLayout.Parent = hubScroll
+	
+		local hubScripts = {
+			{"c00lkidd utg", "https://pastebin.com/raw/iwMzX8XG"},
+			{"Goner", "https://rawscripts.net/raw/Universal-Script-Goner-47954"},
+			{"UTG client replication", "https://rawscripts.net/raw/Client-Replication-UTG-for-client-replication-38612"},
+			{"Xester V1", "https://rawscripts.net/raw/Prison-Life-Xester-18937"},
+			{"Skybox + decal [Working]", "https://pastebin.com/raw/nDR4H6nx"},
+			{"Caducus Require", "https://pastebin.com/raw/XJeBNe0s"}
+		}
+	
+		for _, v in ipairs(hubScripts) do
+			local button = Instance.new("TextButton")
+			button.Size = UDim2.new(0.95,0,0,30)
+			button.BackgroundColor3 = Color3.fromRGB(50,0,0)
+			button.TextColor3 = Color3.fromRGB(255,255,255)
+			button.Font = Enum.Font.GothamBold
+			button.Text = v[1]
+			button.Parent = hubScroll
+	
+			button.MouseButton1Click:Connect(function()
+				local success, err = pcall(function()
+					loadstring(game:HttpGet(v[2]))()
+				end)
+				if not success then warn(err) end
 			end)
-			if success then
-				logOutput("[SUCCESS] Admin loaded successfully.", Color3.fromRGB(0, 255, 0))
+		end
+	
+		local extraButton = Instance.new("TextButton")
+		extraButton.Size = UDim2.new(0.95,0,0,30)
+		extraButton.BackgroundColor3 = Color3.fromRGB(50,0,0)
+		extraButton.TextColor3 = Color3.fromRGB(255,255,255)
+		extraButton.Font = Enum.Font.GothamBold
+		extraButton.Text = "Skybox + decal [Not working]"
+		extraButton.Parent = hubScroll
+	
+		extraButton.MouseButton1Click:Connect(function()
+			local success, err = pcall(function()
+				loadstring(game:HttpGet("https://pastebin.com/raw/C0olSkyDecal"))()
+			end)
+			if not success then warn(err) end
+		end)
+	
+		hubLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+			hubScroll.CanvasSize = UDim2.new(0,0,0,hubLayout.AbsoluteContentSize.Y + 10)
+		end)
+	
+		local executor = tabs["Executor"]
+	
+		local codeBox = Instance.new("TextBox")
+		codeBox.Size = UDim2.new(0.9,0,0.6,0)
+		codeBox.Position = UDim2.new(0.05,0,0.05,0)
+		codeBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+		codeBox.TextColor3 = Color3.fromRGB(255,255,255)
+		codeBox.ClearTextOnFocus = false
+		codeBox.TextWrapped = true
+		codeBox.MultiLine = true
+		codeBox.PlaceholderText = "Paste your Lua code or loadstring here"
+		codeBox.Parent = executor
+	
+		local execButton = Instance.new("TextButton")
+		execButton.Size = UDim2.new(0.27,0,0.1,0)
+		execButton.Position = UDim2.new(0.05,0,0.7,0)
+		execButton.BackgroundColor3 = Color3.fromRGB(200,0,0)
+		execButton.TextColor3 = Color3.fromRGB(255,255,255)
+		execButton.Text = "Execute"
+		execButton.Parent = executor
+		execButton.MouseButton1Click:Connect(function()
+			local code = codeBox.Text
+			local success, err = pcall(function() loadstring(code)() end)
+			if not success then warn(err) end
+		end)
+	
+		local clearButton = Instance.new("TextButton")
+		clearButton.Size = UDim2.new(0.27,0,0.1,0)
+		clearButton.Position = UDim2.new(0.37,0,0.7,0)
+		clearButton.BackgroundColor3 = Color3.fromRGB(200,0,0)
+		clearButton.TextColor3 = Color3.fromRGB(255,255,255)
+		clearButton.Text = "Clear"
+		clearButton.Parent = executor
+		clearButton.MouseButton1Click:Connect(function() codeBox.Text = "" end)
+	
+		local ssButton = Instance.new("TextButton")
+		ssButton.Size = UDim2.new(0.27,0,0.1,0)
+		ssButton.Position = UDim2.new(0.69,0,0.7,0)
+		ssButton.BackgroundColor3 = Color3.fromRGB(200,0,0)
+		ssButton.TextColor3 = Color3.fromRGB(255,255,255)
+		ssButton.Text = "SS Execute"
+		ssButton.Parent = executor
+		ssButton.MouseButton1Click:Connect(function()
+			local assetId = tonumber(codeBox.Text)
+			if assetId then
+				local success, gui = pcall(function()
+					return game:GetService("InsertService"):LoadAsset(assetId)
+				end)
+				if success and gui then
+					for _, obj in pairs(gui:GetChildren()) do
+						if obj:IsA("ScreenGui") then
+							obj.Parent = player:WaitForChild("PlayerGui")
+						end
+					end
+				else
+					warn("Failed to load asset GUI")
+				end
 			else
-				logOutput("[ERROR] Failed to load Admin: " .. tostring(result), Color3.fromRGB(255, 0, 0))
+				warn("Invalid Asset ID")
 			end
 		end)
 	
-		frame.Active = true
-		frame.Draggable = true
-		print ("Follow me on Roblox <3 @REALNAMEMWII2")
-		print ("also follow me on ytube @Foxian_The_Creator_Fox")
+		local credits = tabs["Credits"]
+		local creditsLabel = Instance.new("TextLabel")
+		creditsLabel.Size = UDim2.new(0.9,0,0.2,0)
+		creditsLabel.Position = UDim2.new(0.05,0,0.4,0)
+		creditsLabel.BackgroundTransparency = 1
+		creditsLabel.TextColor3 = Color3.fromRGB(255,50,50)
+		creditsLabel.TextScaled = true
+		creditsLabel.Font = Enum.Font.GothamBold
+		creditsLabel.Text = "GUI by c00lkiddiskingnow!!!"
+		creditsLabel.TextWrapped = true
+		creditsLabel.Parent = credits
+	
+		local logs = tabs["Logs"]
+		local logBox = Instance.new("ScrollingFrame")
+		logBox.Size = UDim2.new(0.95,0,0.9,0)
+		logBox.Position = UDim2.new(0.025,0,0.05,0)
+		logBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+		logBox.CanvasSize = UDim2.new(0,0,2,0)
+		logBox.ScrollBarThickness = 8
+		logBox.Parent = logs
+	
+		local uiList = Instance.new("UIListLayout")
+		uiList.SortOrder = Enum.SortOrder.LayoutOrder
+		uiList.Parent = logBox
+	
+		local function addLog(msg)
+			local label = Instance.new("TextLabel")
+			label.Size = UDim2.new(1,0,0,20)
+			label.BackgroundTransparency = 1
+			label.TextColor3 = Color3.fromRGB(255,255,255)
+			label.Font = Enum.Font.SourceSans
+			label.TextSize = 16
+			label.TextXAlignment = Enum.TextXAlignment.Left
+			label.Text = msg
+			label.Parent = logBox
+			logBox.CanvasSize = UDim2.new(0,0,0,uiList.AbsoluteContentSize.Y)
+		end
+	
+		game.Players.PlayerAdded:Connect(function(p)
+			addLog("Player joined: "..p.Name)
+		end)
+	
+		game.Players.PlayerRemoving:Connect(function(p)
+			addLog("Player left: "..p.Name)
+		end)
+	
+		game:GetService("ReplicatedStorage").ChildAdded:Connect(function(c)
+			addLog("ReplicatedStorage added: "..c.Name)
+		end)
+	
+		player.Chatted:Connect(function(msg)
+			addLog(player.Name..": "..msg)
+		end)
 	end)
 end;
 task.spawn(C_15);
