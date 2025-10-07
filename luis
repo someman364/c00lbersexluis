@@ -471,7 +471,7 @@ local script = G2L["6"];
 	script.Parent.MouseButton1Click:Connect(function()
 		script.Parent.Parent.Parent.Frame1.Visible = true
 		script.Parent.Parent.Parent.Frame3.Visible = false
-		script.Parent.Parent.Parent.Frame.Position = script.Parent.Parent.Parent.Frame2.Position
+		script.Parent.Parent.Parent.Frame3.Position = script.Parent.Parent.Parent.Frame1.Position
 	end)
 end;
 task.spawn(C_6);
